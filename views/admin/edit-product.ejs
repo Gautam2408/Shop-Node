@@ -1,0 +1,58 @@
+<%- include('../includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/forms.css">
+    <link rel="stylesheet" href="/css/product.css">
+    </head>
+
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+            <% if(errorMessage) { %>
+                <div class="user-message user-message--error">
+                    <%=errorMessage%>
+                </div>
+                <%}%>
+                    <main>
+                        <!-- We'll switch to multipart form data which is simply the content type telling the server that this 
+                        submission, that this request will not contain plaintext but will contain mixed data, text and binary
+                        data and multer, the package we just installed will be looking for incoming requests with this type of 
+                        data and will then be able to parse both the text and our file. -->
+                        <form class="product-form"
+                            action="/admin/<% if(editing) { %>edit-product<% } else { %>add-product<% } %>"
+                            method="POST" enctype="multipart/form-data">
+                            <input type="hidden" name="_csrf" value="<%=csrfToken%>" />
+                            <div class="form-control">
+                                <label for="title">Title</label>
+                                <input class="<%=validationErrors.find(e => e.path==='title') ? 'invalid' : '' %>"
+                                    type="text" name="title" id="title"
+                                    value="<% if(editing || hasError) { %><%=prod.title %><% } %>">
+                            </div>
+                            <!-- <div class="form-control">
+                                <label for="imgUrl">Image URL</label>
+                                <input class="<%=validationErrors.find(e => e.path==='imgUrl') ? 'invalid' : '' %>"
+                                    type="text" name="imgUrl" id="imgUrl"
+                                    value="<% if(editing || hasError) { %><%=prod.imgUrl %><% } %> ">
+                            </div> -->
+                            <div class="form-control">
+                                <label for="img">Image</label>
+                                <input type="file" name="img" id="img">
+                            </div>
+                            <div class="form-control">
+                                <label for="price">Price</label>
+                                <input class="<%=validationErrors.find(e => e.path==='price') ? 'invalid' : '' %>"
+                                    type="number" name="price" id="price"
+                                    value="<% if(editing || hasError) { %><%=prod.price%><% } %>" step="0.01">
+                            </div>
+                            <div class="form-control">
+                                <label for="desc">Description</label>
+                                <textarea class="<%=validationErrors.find(e => e.path==='desc') ? 'invalid' : '' %>"
+                                    name="desc" id="desc"
+                                    rows="5"><% if(editing || hasError) { %><%=prod.desc%><% } %></textarea>
+                            </div>
+                            <% if(editing) { %>
+                                <input type="hidden" name="productId" value="<%=prod._id%>">
+                                <%}%>
+                                    <button class="btn" type="submit">
+                                        <% if(editing) { %> Update Product <% } else { %> Add Product <% } %>
+                                    </button>
+                        </form>
+                    </main>
+                    <%- include('../includes/end.ejs') %>

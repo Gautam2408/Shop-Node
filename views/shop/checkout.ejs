@@ -1,0 +1,41 @@
+<%- include('../includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/cart.css">
+    </head>
+
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+            <main>
+                <ul class="cart__item-list">
+                    <% prods.forEach(p=> {%>
+                        <li class="cart__item">
+                            <h1>
+                                <%=p.prodId.title%>
+                            </h1>
+                            <h2>Quantity: <%=p.qty%>
+                            </h2>
+                        </li>
+                        <% } ) %>
+                </ul>
+                <div class="centered">
+                    <h2>
+                        Total: <%=totalPrice%>
+                    </h2>
+                </div>
+                <button id="order-btn" class="btn">ORDER!</button>
+                <script src="https://js.stripe.com/v3/"></script>
+                <script>
+                    const stripe = Stripe("pk_test_51PXeCaDeGWaTmrCimkJKs1of4OnsTNK4RV5ibwTw7upbav1q75MfjKtyPcURCMztCbPz3gVXvYV4AckWvZFCQYG200uZQlXBYJ");
+                    const orderBtn = document.getElementById("order-btn");
+                    // Now redirect to checkout takes a JavaScript object where we can configure this.
+                    // What this will do in the end is it will redirect the user to some of stripe's pages 
+                    // where the user then enters credit card data and so on.And once all of this is done 
+                    // and the payment is confirmed there, the user is redirected back to us.
+                    orderBtn.addEventListener("click", function () {
+                        stripe.redirectToCheckout({
+                            sessionId: "<%=sessionId%>"
+                        })
+                    })
+                </script>
+
+            </main>
+            <%- include('../includes/end.ejs') %>
